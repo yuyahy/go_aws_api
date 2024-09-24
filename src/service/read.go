@@ -16,7 +16,7 @@ func ReadWorkout(ctx context.Context, request events.APIGatewayProxyRequest) (ev
 	// func ReadWorkout(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	// GET (Read) の処理
 	method := request.HTTPMethod
-	pathparam := request.PathParameters["user_id"]
+	pathparam := request.PathParameters["userid"]
 
 	// DB接続
 	sess, err := session.NewSession()

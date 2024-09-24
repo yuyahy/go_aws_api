@@ -15,7 +15,7 @@ import (
 func UpdateWorkout(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	// PUT (Update) の処理
 	method := request.HTTPMethod
-	pathparam := request.PathParameters["user_id"]
+	pathparam := request.PathParameters["userid"]
 
 	// DB接続
 	sess, err := session.NewSession()
