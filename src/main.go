@@ -1,40 +1,27 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
+	"go-api-lambda/src/service"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
-type Response struct {
-	RequestMethod  string `json:"RequestMethod"`
-	RequestBody    string `json:"RequestBody"`
-	PathParameter  string `json:"PathParameter"`
-	QueryParameter string `json:"QueryParameter"`
-}
-
-func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	// httpリクエストの情報を取得
-	method := request.HTTPMethod
-	body := request.Body
-	pathParam := request.PathParameters["pathparam"]
-	queryParam := request.QueryStringParameters["queryparam"]
-
-	// レスポンスとして返すjson文字列を作る
-	res := Response{
-		RequestMethod:  method,
-		RequestBody:    body,
-		PathParameter:  pathParam,
-		QueryParameter: queryParam,
+func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	switch request.HTTPMethod {
+	case "POST":
+		return service.CreateWorkout(ctx, request)
+	case "GET":
+		return service.ReadWorkout(ctx, request)
+	case "PUT":
+		return service.UpdateWorkout(ctx, request)
+	case "DELETE":
+		return service.DeleteWorkout(ctx, request)
+	default:
+		// requestBody, _ := json.Marshal(request)
+		return events.APIGatewayProxyResponse{StatusCode: 405, Body: "Method Not Allowed"}, nil
 	}
-	jsonBytes, _ := json.Marshal(res)
-
-	// 返り値としてレスポンスを返す
-	return events.APIGatewayProxyResponse{
-		Body:       string(jsonBytes),
-		StatusCode: 200,
-	}, nil
 }
 
 func main() {
